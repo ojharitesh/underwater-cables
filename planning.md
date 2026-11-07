@@ -5,3 +5,8 @@ The objective of the Underwater Cables problem is to connect all `n` island data
 
 This is a Minimum Spanning Tree (MST) problem. A spanning tree connects every vertex without forming a cycle and contains exactly `n-1` edges. We assume the input graph is connected; otherwise, no solution can connect all islands using the available routes.
 
+## Baseline Solution
+
+## Algorithmic Strategy 
+
+## Complexity Analysis 
