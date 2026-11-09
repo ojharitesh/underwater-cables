@@ -10,3 +10,4 @@ This is a Minimum Spanning Tree (MST) problem. A spanning tree connects every ve
 ## Algorithmic Strategy 
 
 ## Complexity Analysis 
+Our baseline starts at one island and repeatedly scans every cable route to find the cheapest one that connects a visited island to a new one. A spanning tree needs |V| − 1 edges, so we repeat this scan about |V| times, and each scan may look at all |E| routes. That gives O(|V| × |E|). The main weakness is repeated work: each round re-checks routes we’ve already looked at. This is fine for small maps but gets slow as the number of islands and routes grows. Kruskal’s avoids this by sorting the routes once (O(|E| log |E|)) and then making a quick cycle check for each one with Union-Find, which is why it’s our improved solution.
