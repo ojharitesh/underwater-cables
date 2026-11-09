@@ -6,7 +6,7 @@ The objective of the Underwater Cables problem is to connect all `n` island data
 This is a Minimum Spanning Tree (MST) problem. A spanning tree connects every vertex without forming a cycle and contains exactly `n-1` edges. We assume the input graph is connected; otherwise, no solution can connect all islands using the available routes.
 
 ## Baseline Solution
-Instead of searching through every possible exponential combination (e.g., $2^n$ subsets of coordinates), a greedy baseline makes the locally optimal choice at each step: it iteratively places a router at the candidate location that covers the highest number of currently uncovered target areas until all targets are covered or a budget/router limit is reached.
+Instead of testing complex combinations, Kruskal's algorithm uses a greedy strategy: it sorts all available cable routes (edges) in ascending order of their installation costs. It then iterates through the sorted list, adding the cheapest cable to the network one by one, provided that adding it does not create a closed loop (cycle) among the islands. The process stops once all $n$ islands are connected using exactly $n-1$ cables.
 ## Algorithmic Strategy 
 
 ## Complexity Analysis 
