@@ -18,14 +18,15 @@ class DSU:
         parent = array of size of number of vertices
         size = array of size of number of vertices initialized to 0
 
-        for each vertex in vertices from 0 to vertices - 1
-    FIND(x):
+        for each vertex in vertices from 0 to vertices - 1:
+            parent[vertex] = vertex
+    find(x):
         if parent[x] != x:
-            parent[x] = FIND(parent[x])
+            parent[x] = find(parent[x])
         return x
-    UNION(x, y):
-        found_x = FIND(x)
-        found_y = FIND(y)
+    union(x, y):
+        found_x = find(x)
+        found_y = find(y)
         if rank[found_x] < rank[found_y]:
             parent[found_x] = found_y
         else if rank[found_x] > rank[found_y]:
