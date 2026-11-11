@@ -11,8 +11,29 @@ Instead of testing complex combinations, Kruskal's algorithm uses a greedy strat
 ## Algorithmic Strategy 
 To efficently find the smallest possible total cost of a weighted, undirected graph, we want to use a greedy approach that will go for the cheapest most efficent route possible. Specifically, we want to use what is called `Kruskal's Algorithm` which repeatedly chooses the cheapest available edge that does not create a cycle. The algorithm ensures there is no cycle since a cycle would make the graph no longer a `Minimum Spanning Tree`. 
 
-For the algorithm to work, we use the data structure of Disjoint Set Union. DSU allows us to make a set of the weighted graph (MAKE-SET) and then use the functions FIND, UNION to figure out if islands are connected already or not and connect them if they need to be. 
+For the algorithm to work, we use the data structure of Disjoint Set Union. DSU allows us to make a set of the weighted graph (MAKE-SET) and then use the functions FIND, UNION to figure out if islands are connected already or not and connect them if they need to be. A DSU class will have to be made that will check these things. This class includes:
+```text
+class DSU:
+    def __init__(self, vertices):
+        parent = array of size of number of vertices
+        size = array of size of number of vertices initialized to 0
 
+        for each vertex in vertices from 0 to vertices - 1
+    FIND(x):
+        if parent[x] != x:
+            parent[x] = FIND(parent[x])
+        return x
+    UNION(x, y):
+        found_x = FIND(x)
+        found_y = FIND(y)
+        if rank[found_x] < rank[found_y]:
+            parent[found_x] = found_y
+        else if rank[found_x] > rank[found_y]:
+            parent[found_y] = found_x
+        else:
+            parent[found_y] = found_x
+            rank[found_x] = rank[found_x] + 1
+```
 To find the MST of the graph, we implement `Kruskal's Algorithm` in our Underwater Cables problem. The algorithm first starts with an empty MST that we attempting to create. The algorithm uses DSU to make sure each island has its own component in the set. The algorithm then sorts all the edges in ascending order with the cheapest first. The for loop then finds through the cheapest available edge and checks if it would create a cycle or not. If not, add it to MST and if so, move on. This for loop will continue until there are edges of less than one of the total vertices. This ensures that the MST will contain the cheapest possible tree between the islands. 
 ```text
 Algorithm underWaterCablesGreedy(G):
@@ -23,15 +44,16 @@ Algorithm underWaterCablesGreedy(G):
         MST = minimum spanning tree
         total_cost = total cost of the MST (minimum through the algorithm)
 
+    initialize DSU
     MST = empty set of edges
     total cost = 0 
     for every vertices (v) in V: 
-        MAKE-SET(v)
+        make_set(v)
     Sort edges by increasing costs (least expensive -> most expensive)
     for each edge (x, y, cost) in E:
-        if FIND(x)!= FIND(y):
+        if dsu.find(x)!= dsu.find(y):
             MST.add(x, y, cost)
-            UNION(x, y)
+            dsu.union(x, y)
             total_cost += cost
         if size(MST) == V - 1:
             break
