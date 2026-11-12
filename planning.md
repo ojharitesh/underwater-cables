@@ -11,7 +11,7 @@ Instead of testing complex combinations, Kruskal's algorithm uses a greedy strat
 ## Algorithmic Strategy 
 To efficently find the smallest possible total cost of a weighted, undirected graph, we want to use a greedy approach that will go for the cheapest most efficent route possible. Specifically, we want to use what is called `Kruskal's Algorithm` which repeatedly chooses the cheapest available edge that does not create a cycle. The algorithm ensures there is no cycle since a cycle would make the graph no longer a `Minimum Spanning Tree`. 
 
-For the algorithm to work, we use the data structure of Disjoint Set Union. DSU allows us to make a set of the weighted graph (MAKE-SET) and then use the functions FIND, UNION to figure out if islands are connected already or not and connect them if they need to be. A DSU class will have to be made that will check these things. This class includes:
+For the algorithm to work, we use the data structure of Disjoint Set Union. DSU allows us to make a set of the weighted graph and then use the functions FIND, UNION to figure out if islands are connected already or not and connect them if they need to be. A DSU class will have to be made that will check these things. This class includes:
 ```text
 class DSU:
     def __init__(self, vertices):
