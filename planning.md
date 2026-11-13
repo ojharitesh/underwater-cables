@@ -62,24 +62,35 @@ Starting at island A, the baseline selects A–B with cost 2. It then selects B�
 This approach guarantees an optimal solution because each selected edge is the cheapest edge connecting the current group to the remaining islands. However, repeatedly scanning all routes becomes inefficient as the number of islands and routes increases.
 
 ## Algorithmic Strategy 
-To efficently find the smallest possible total cost of a weighted, undirected graph, we want to use a greedy approach that will go for the cheapest most efficent route possible. Specifically, we want to use what is called `Kruskal's Algorithm` which repeatedly chooses the cheapest available edge that does not create a cycle. The algorithm ensures there is no cycle since a cycle would make the graph no longer a `Minimum Spanning Tree`. 
 
-For the algorithm to work, we use the data structure of Disjoint Set Union. DSU allows us to make a set of the weighted graph and then use the functions FIND, UNION to figure out if islands are connected already or not and connect them if they need to be. A DSU class will have to be made that will check these things. This class includes:
+To efficiently find the smallest possible total cost of connecting all islands, we will use a different greedy approach based on **Kruskal’s algorithm**. The algorithm sorts all available cable routes by increasing installation cost and repeatedly chooses the cheapest edge that does not create a cycle. A cycle would add an unnecessary cable because its endpoints already have a path connecting them.
+
+For the algorithm to work efficiently, we use a **Disjoint Set Union (DSU)** data structure. DSU initially places each island in its own component. The `find` operation identifies the component an island belongs to, while `union` merges two components after we select a cable connecting them. If two islands already belong to the same component, adding a cable between them would create a cycle.
+
+Our DSU uses path compression in `find` and union by rank in `union` to keep these operations efficient. The class includes:
+
 ```text
 class DSU:
-    def __init__(self, vertices):
-        parent = array of size of number of vertices
-        size = array of size of number of vertices initialized to 0
+    initialize(vertices):
+        parent = empty map
+        rank = empty map
 
-        for each vertex in vertices from 0 to vertices - 1:
-            parent[vertex] = vertex
+        for each vertex v in vertices:
+            parent[v] = v
+            rank[v] = 0
+
     find(x):
         if parent[x] != x:
             parent[x] = find(parent[x])
-        return x
+        return parent[x]
+
     union(x, y):
         found_x = find(x)
         found_y = find(y)
+
+        if found_x == found_y:
+            return
+
         if rank[found_x] < rank[found_y]:
             parent[found_x] = found_y
         else if rank[found_x] > rank[found_y]:
@@ -88,30 +99,35 @@ class DSU:
             parent[found_y] = found_x
             rank[found_x] = rank[found_x] + 1
 ```
-To find the MST of the graph, we implement `Kruskal's Algorithm` in our Underwater Cables problem. The algorithm first starts with an empty MST that we attempting to create. The algorithm uses DSU to make sure each island has its own component in the set. The algorithm then sorts all the edges in ascending order with the cheapest first. The for loop then finds through the cheapest available edge and checks if it would create a cycle or not. If not, add it to MST and if so, move on. This for loop will continue until there are edges of less than one of the total vertices. This ensures that the MST will contain the cheapest possible tree between the islands. 
-```text
-Algorithm underWaterCablesGreedy(G):
-    Input: a weighted, undirected graph G=(V,E) 
-        V = vertices representing islands 
-        E = edges of the graph that connect the islands
-    Output: 
-        MST = minimum spanning tree
-        total_cost = total cost of the MST (minimum through the algorithm)
 
-    initialize DSU
-    MST = empty set of edges
-    total cost = 0 
-    for every vertices (v) in V: 
-        make_set(v)
-    Sort edges by increasing costs (least expensive -> most expensive)
-    for each edge (x, y, cost) in E:
-        if dsu.find(x)!= dsu.find(y):
-            MST.add(x, y, cost)
-            dsu.union(x, y)
-            total_cost += cost
-        if size(MST) == V - 1:
-            break
-    return MST, total_cost
+To find the MST, the algorithm starts with an empty set of selected edges and initializes DSU so that each island belongs to its own component. It then sorts all edges in ascending order of cost. For each edge, it checks whether the endpoints belong to different components. If they do, the algorithm adds the edge to the MST, updates the total cost, and merges the components. Otherwise, it skips the edge. The algorithm stops after selecting exactly `|V| - 1` edges. If all edges have been considered without reaching this count, no spanning tree exists.
+
+This greedy choice is justified by the **MST cut property**. Each selected edge is a cheapest edge leaving one of the current components, so it can safely be added while preserving the possibility of completing a minimum spanning tree. Repeating these safe choices connects all islands at the minimum total installation cost.
+
+```text
+Algorithm underwaterCablesGreedy(G):
+    input: Weighted, undirected graph G = (V, E)
+    output: MST and its total cost, or failure if disconnected
+
+    MST = empty set
+    total_cost = 0
+
+    if size(V) <= 1:
+        return MST, total_cost
+
+    dsu = DSU(V)
+    sorted_edges = sort E by increasing cost
+
+    for each edge (u, v, cost) in sorted_edges:
+        if dsu.find(u) != dsu.find(v):
+            Add (u, v, cost) to MST
+            total_cost = total_cost + cost
+            dsu.union(u, v)
+
+            if size(MST) == size(V) - 1:
+                return MST, total_cost
+
+    return "No spanning tree exists"
 ```
 
 ## Complexity Analysis 
