@@ -7,7 +7,59 @@ The objective of the Underwater Cables problem is to connect all `n` island data
 This is a Minimum Spanning Tree (MST) problem. A spanning tree connects every vertex without forming a cycle and contains exactly `n-1` edges. We assume the input graph is connected; otherwise, no solution can connect all islands using the available routes.
 
 ## Baseline Solution
-Instead of testing complex combinations, Prim’s algorithm uses a greedy strategy: it begins with one island and repeatedly selects the least expensive cable route that connects an island already in the network to an island outside the network. By always expanding from the existing network, the algorithm avoids creating cycles. The process stops once all (n) islands are connected using exactly (n-1) cables.## Algorithmic Strategy 
+For our baseline solution, we will use a simple version of **Prim’s algorithm**. The algorithm starts at any island and repeatedly scans every cable route to find the cheapest edge connecting an already connected island to an unconnected island.
+
+After selecting that edge, the algorithm adds the new island to the connected group. This continues until every island is connected. If no edge connects the current group to a remaining island, the algorithm reports that no spanning tree exists.
+
+```text
+Algorithm underwaterCablesBaseline(G):
+    input: Weighted, undirected graph G = (V, E)
+    output: MST and its total cost, or failure if disconnected
+
+    MST = empty set
+    total_cost = 0
+
+    if V is empty:
+        return MST, total_cost
+
+    connected = hash set containing any vertex in V
+
+    while size(connected) < size(V):
+        cheapest = NONE
+
+        for each edge (u, v, cost) in E:
+            if exactly one of u and v is in connected:
+                if cheapest is NONE or cost < cheapest.cost:
+                    cheapest = (u, v, cost)
+
+        if cheapest is NONE:
+            return "No spanning tree exists"
+
+        (u, v, cost) = cheapest
+        Add cheapest to MST
+        total_cost = total_cost + cost
+
+        if u is in connected:
+            Add v to connected
+        else:
+            Add u to connected
+
+    return MST, total_cost
+```
+
+For example, suppose we have four islands with these possible cable routes:
+
+| Cable Route | Installation Cost |
+|-------------|-------------------|
+| A–B         | 2                 |
+| A–C         | 5                 |
+| B–C         | 1                 |
+| B–D         | 4                 |
+| C–D         | 3                 |
+
+Starting at island A, the baseline selects A–B with cost 2. It then selects B–C with cost 1, followed by C–D with cost 3. These three cables connect all four islands with a minimum total cost of **6**.
+
+This approach guarantees an optimal solution because each selected edge is the cheapest edge connecting the current group to the remaining islands. However, repeatedly scanning all routes becomes inefficient as the number of islands and routes increases.
 
 ## Algorithmic Strategy 
 To efficently find the smallest possible total cost of a weighted, undirected graph, we want to use a greedy approach that will go for the cheapest most efficent route possible. Specifically, we want to use what is called `Kruskal's Algorithm` which repeatedly chooses the cheapest available edge that does not create a cycle. The algorithm ensures there is no cycle since a cycle would make the graph no longer a `Minimum Spanning Tree`. 
