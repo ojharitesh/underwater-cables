@@ -1,0 +1,4 @@
+vertices,edges,edge_density_percent,mst_total_cost,average_runtime_ms,trial_1_runtime_ms,trial_2_runtime_ms,trial_3_runtime_ms,trial_4_runtime_ms,trial_5_runtime_ms
+10,9,20.00,4732,0.066560,0.121400,0.050200,0.040700,0.084000,0.036500
+100,99,2.00,49147,0.587420,0.504400,0.344900,0.826700,0.660900,0.600200
+500,499,0.40,252737,1.311920,1.325400,1.263700,1.291500,1.322000,1.357000
